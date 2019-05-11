@@ -7,5 +7,5 @@
 # DPDK instance, use 'make'
 
 sources = files(
-	'basicfwd.c'
+	'reflector.c'
 )
