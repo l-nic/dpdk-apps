@@ -126,12 +126,11 @@ lcore_main(void)
 	/* Run until the application is quit or killed. */
 	for (;;) {
 		/*
-		 * Receive packets on a port and forward them on the paired
-		 * port. The mapping is 0 -> 1, 1 -> 0, 2 -> 3, 3 -> 2, etc.
+		 * Receive packets on a port and forward back out the same port 
 		 */
 		RTE_ETH_FOREACH_DEV(port) {
 
-			/* Get burst of RX packets, from first port of pair. */
+			/* Get burst of RX packets */
 			struct rte_mbuf *bufs[BURST_SIZE];
 			const uint16_t nb_rx = rte_eth_rx_burst(port, 0,
 					bufs, BURST_SIZE);
@@ -139,8 +138,10 @@ lcore_main(void)
 			if (unlikely(nb_rx == 0))
 				continue;
 
-			/* Send burst of TX packets, to second port of pair. */
-			const uint16_t nb_tx = rte_eth_tx_burst(port ^ 1, 0,
+			printf("\nForwarding packet burst ...\n");
+
+			/* Send burst of TX packets */
+			const uint16_t nb_tx = rte_eth_tx_burst(port, 0,
 					bufs, nb_rx);
 
 			/* Free any unsent packets. */
@@ -172,10 +173,8 @@ main(int argc, char *argv[])
 	argc -= ret;
 	argv += ret;
 
-	/* Check that there is an even number of ports to send/receive on. */
+	/* Check the number of ports to forward on */
 	nb_ports = rte_eth_dev_count_avail();
-	if (nb_ports < 2 || (nb_ports & 1))
-		rte_exit(EXIT_FAILURE, "Error: number of ports must be even\n");
 
 	/* Creates a new mempool in memory to hold the mbufs. */
 	mbuf_pool = rte_pktmbuf_pool_create("MBUF_POOL", NUM_MBUFS * nb_ports,
