@@ -138,7 +138,7 @@ lcore_main(void)
 			if (unlikely(nb_rx == 0))
 				continue;
 
-			printf("\nForwarding packet burst ...\n");
+//			printf("\nForwarding packet burst ...\n");
 
 			/* Send burst of TX packets */
 			const uint16_t nb_tx = rte_eth_tx_burst(port, 0,
