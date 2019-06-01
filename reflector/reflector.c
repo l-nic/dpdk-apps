@@ -189,8 +189,8 @@ main(int argc, char *argv[])
 			rte_exit(EXIT_FAILURE, "Cannot init port %"PRIu16 "\n",
 					portid);
 
-	if (rte_lcore_count() > 1)
-		printf("\nWARNING: Too many lcores enabled. Only 1 used.\n");
+	if (rte_lcore_count() != 1)
+		rte_exit(EXIT_FAILURE, "Too many cores enabled. Pick one.\n");
 
 	/* Call lcore_main on the master core only. */
 	lcore_main();
